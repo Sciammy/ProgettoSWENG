@@ -1,8 +1,9 @@
-package com.google.gwt.sample.stockwatcher.server;
+package com.google.gwt.sample.stockwatcher.client;
 
 import java.io.Serializable;
-
 import java.util.Arrays;
+
+
 
 public class Pokemon_card extends Card{
     private String illustrator;
@@ -157,4 +158,3 @@ public class Pokemon_card extends Card{
         }
     }
 }
-

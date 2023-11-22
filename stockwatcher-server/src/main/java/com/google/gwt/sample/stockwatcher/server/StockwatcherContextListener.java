@@ -29,11 +29,16 @@ import com.google.gson.Gson;
 
 
 
+
+
 @WebListener
 public class StockwatcherContextListener implements ServletContextListener,  MapDBConstants {
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
+		
+
+		
 		 
 		if(new File("magic_cards.json").exists() && new File("pokemon_cards.json").exists() && new File("yugioh_cards.json").exists() ) {
 			try {
@@ -49,9 +54,7 @@ public class StockwatcherContextListener implements ServletContextListener,  Map
 				try (BufferedReader br = new BufferedReader(new FileReader("magic_cards.json"))) {
 				    magicCards = gson.fromJson(br, Magic_card[].class);
 
-		//		    for (Magic_card card : magicCards) {
-			//	        System.out.println(card.toString());
-				//    }
+
 				}
 				
 				try (BufferedReader br2 = new BufferedReader(new FileReader("pokemon_cards.json"))) {
@@ -61,19 +64,25 @@ public class StockwatcherContextListener implements ServletContextListener,  Map
 				try (BufferedReader br3 = new BufferedReader(new FileReader("yugioh_cards.json"))) {
 					yugiohCards = gson.fromJson(br3, Yugioh_card[].class); }
 				
-			//	System.out.println("PRINTED");
-				
+
 				DB db = DBMaker.fileDB(new File(DB_FILENAME)).make();
 				
-				//DB db = DBMaker.fileDB(new File(DB_CARD_FILENAME)).make();
-				//Map<String, Magic_card> cardMap = db.treeMap(ID_TREEMAP_NAME, Serializer.STRING, Serializer.JAVA).create();
-				
-				Map<String, String> cardMap = db.hashMap(ID_TREEMAP_NAME)
-                        .keySerializer(Serializer.STRING)
+
+				Map<Integer, String> cardMagicMap = db.hashMap(MAGIC_HASHMAP_NAME)
+                        .keySerializer(Serializer.INTEGER)
                         .valueSerializer(Serializer.STRING)
                         .create();
 				
-			//	System.out.println("MAPPA CREATA");
+				Map<Integer, String> cardPokemonMap = db.hashMap(POKEMON_HASHMAP_NAME)
+                        .keySerializer(Serializer.INTEGER)
+                        .valueSerializer(Serializer.STRING)
+                        .create();
+				
+				Map<Integer, String> cardYugihoMap = db.hashMap(YUGIOH_HASHMAP_NAME)
+                        .keySerializer(Serializer.INTEGER)
+                        .valueSerializer(Serializer.STRING)
+                        .create();
+				
 				MagicCardSerializer serialMC = new MagicCardSerializer();
 				PokemonCardSerializer serialPM = new PokemonCardSerializer();
 				YugiohCardSerializer serialYO = new YugiohCardSerializer();
@@ -81,18 +90,36 @@ public class StockwatcherContextListener implements ServletContextListener,  Map
 
 				
 				   for (int i = 0; i < magicCards.length; i++) {
-					   String json = serialMC.serialize(magicCards[i]);
-		                cardMap.put(Integer.toString(i)+"MC", json);
+
+		                magicCards[i].setID(i);	
+		                magicCards[i].setTipoGioco("MAGIC");
+		                String json = serialMC.serialize(magicCards[i]);
+					    cardMagicMap.put(i, json);		 
+					    
+
 		            }
 				   
 				   for (int i = 0; i < pokemonCards.length; i++) {
-					   String json = serialPM.serialize(pokemonCards[i]);
-		                cardMap.put(Integer.toString(i)+"PM", json);
+					   //String ID = Integer.toString(i)+"PM";
+					  
+		               pokemonCards[i].setID(i);
+		               pokemonCards[i].setTipoGioco("MAGIC");
+		               String json = serialPM.serialize(pokemonCards[i]);
+					   cardPokemonMap.put(i, json);
+		                
+
 		            }
 				   
 				   for (int i = 0; i < yugiohCards.length; i++) {
-					   String json = serialYO.serialize(yugiohCards[i]);
-		                cardMap.put(Integer.toString(i)+"YO", json);
+					   //String ID = Integer.toString(i)+"YO";
+					   
+		               yugiohCards[i].setID(i);
+		               yugiohCards[i].setTipoGioco("YUGIOH");
+		               String json = serialYO.serialize(yugiohCards[i]);
+					   cardYugihoMap.put(i, json);
+
+		                
+
 		            }
 
 				   
@@ -102,8 +129,7 @@ public class StockwatcherContextListener implements ServletContextListener,  Map
 				   
 				   
 				 
-				//	System.out.println("Map contents:"); printo per assicurarmi di aver preso tutto dentro
-				    for (Entry<String, String> entry : cardMap.entrySet())  {
+				    for (Entry<Integer, String> entry : cardMagicMap.entrySet())  {
 				       System.out.println("CHIAVE: " + entry.getKey() + ", VALORE: " + entry.getValue());
 				    }	
 				
@@ -121,7 +147,7 @@ public class StockwatcherContextListener implements ServletContextListener,  Map
 				
 				
 			} catch (IOException e) {
-				System.out.println("ERROOOOOOORE " + e);
+				System.out.println("ERRORE " + e);
 				
 				}	
 		}

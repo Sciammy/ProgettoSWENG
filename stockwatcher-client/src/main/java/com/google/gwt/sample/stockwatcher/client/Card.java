@@ -1,4 +1,4 @@
-package com.google.gwt.sample.stockwatcher.server;
+package com.google.gwt.sample.stockwatcher.client;
 
 import java.io.Serializable;
 
@@ -28,9 +28,15 @@ public class Card implements Serializable{
         return tipoGioco;
     }
     
+    
+    public String getName() {
+        return name;
+    }
+    
     public int getCondizione() {
         return ID;
     }
 	
 	
 }
+

@@ -1,4 +1,4 @@
-package com.google.gwt.sample.stockwatcher.server;
+package com.google.gwt.sample.stockwatcher.client;
 
 
 public class Magic_card extends Card{

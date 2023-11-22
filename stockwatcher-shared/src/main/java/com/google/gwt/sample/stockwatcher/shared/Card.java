@@ -1,14 +1,14 @@
-package com.google.gwt.sample.stockwatcher.server;
+package com.google.gwt.sample.stockwatcher.shared;
 
 import java.io.Serializable;
 
 public class Card implements Serializable{
 	protected String name;
-	protected int ID;
+	protected String ID;
 	protected String tipoGioco;
 	protected String condizione;
 	
-	public void setID(int ID) {
+	public void setID(String ID) {
 	this.ID = ID;
 	}
 	
@@ -20,7 +20,7 @@ public class Card implements Serializable{
 	this.condizione = condizione;
 	}
 	
-    public int getID() {
+    public String getID() {
         return ID;
     }
     
@@ -28,9 +28,10 @@ public class Card implements Serializable{
         return tipoGioco;
     }
     
-    public int getCondizione() {
+    public String getCondizione() {
         return ID;
     }
 	
 	
 }
+

@@ -1,14 +1,9 @@
 package com.google.gwt.sample.stockwatcher.server;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -18,20 +13,18 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
 
-import com.google.gson.Gson;
-import com.google.gwt.core.client.impl.AsyncFragmentLoader.Logger;
-import com.google.gwt.sample.stockwatcher.shared.StockPrice;
 import com.google.gwt.sample.stockwatcher.shared.StockPriceService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
 @WebServlet(name = "stockPrices", urlPatterns = "/app/stockPrices")
 public class StockPriceServiceImpl extends RemoteServiceServlet implements StockPriceService, MapDBConstants {
 	private static final long serialVersionUID = 4192379456341403664L;
 	private static final double MAX_PRICE = 100.0; // $100.00
 	private static final double MAX_PRICE_CHANGE = 0.02; // +/- 2%
 
-	
-	/** Cambio Contenct con Key */
 
+	
+	//cambio content con key e vedo se migliora comunque ho la versione vecchia salvata
 	@Override
 	public boolean controlAccount(String user) {
 	    DB db = getDB();
@@ -40,10 +33,13 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 	            .createOrOpen();
 	    boolean userExists = map.containsKey(user); // Check if the user (key) exists
 
+ 
 
 	    return userExists;
 	}
 
+
+	
 
 	
 	
@@ -54,11 +50,12 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 	            .valueSerializer(Serializer.STRING)
 	            .createOrOpen();
 
+	  
 
 	    map.put(user, pwd);
 
 	    db.commit(); // Always remember to commit after modifications
-	 //   db.close(); se lo chiudo poi risulta chiuso e non me lo riapre
+	 //   db.close();
 	}
 	
 
@@ -108,6 +105,23 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 		
 		
 	}
+
+
+
+	@Override
+	public String[] loadCarteMagic() { //SECONDO ME LA PAGINA è DA CAMBIARE, COSì DA AVERE TRE PULSANTI: UNO PER CARTE POKEMON UNO MAGIC E UNO YUGIOH, MAGARI TUTTE E TRE COMUNQUE SULLA STESSA TABELLA, SVUOTANDOLA DI VOLTA IN VOLTA. (POI IMPLEMENTARE UN FILTRO O CHE SO IO)
+		// TODO Auto-generated method stub
+		DB db = getDB();
+		Map<Integer, String> cardMap = db.hashMap(MAGIC_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
+		List<String> symbols = new ArrayList<String>();
+		Set<Integer> keys = cardMap.keySet();
+		for(Integer key : keys) {
+			symbols.add(cardMap.get(key));
+		}
+		return symbols.toArray(new String[0]);
+		
+		
+			}
 	
 	
 	

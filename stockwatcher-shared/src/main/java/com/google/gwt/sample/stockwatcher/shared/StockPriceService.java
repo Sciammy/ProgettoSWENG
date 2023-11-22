@@ -7,11 +7,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("stockPrices")
 public interface StockPriceService extends RemoteService {
 
-    //StockPrice[] getPrices(String[] symbols) throws DelistedException;
-
-    //void saveSymbols(String[] symbols);
-
-	//String[] loadSymbols();
 
 	void addAccount(String user, String pwd);
 
@@ -20,5 +15,8 @@ public interface StockPriceService extends RemoteService {
 	boolean login(String checkUser, String checkPwd);
 	
 	void test();
+	
+	String[] loadCarteMagic();
+
 
 }
