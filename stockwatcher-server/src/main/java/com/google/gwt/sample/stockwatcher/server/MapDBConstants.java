@@ -9,4 +9,6 @@ public interface MapDBConstants {
     final static String YUGIOH_HASHMAP_NAME = "yo";
     final static String POKEMON_HASHMAP_NAME = "pm";
     final static String DATACARD_TREEMAP_NAME = "json";
+    final static String PERSONAL_MAGICCARD_TREEMAP_NAME = "personal_MAGIC_Card";
+
 }

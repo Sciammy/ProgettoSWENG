@@ -2,6 +2,7 @@ package com.google.gwt.sample.stockwatcher.server;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,8 +23,6 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 	private static final double MAX_PRICE = 100.0; // $100.00
 	private static final double MAX_PRICE_CHANGE = 0.02; // +/- 2%
 
-
-	
 	//cambio content con key e vedo se migliora comunque ho la versione vecchia salvata
 	@Override
 	public boolean controlAccount(String user) {
@@ -38,10 +37,6 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 	    return userExists;
 	}
 
-
-	
-
-	
 	
 	@Override
 	public void addAccount(String user, String pwd) {
@@ -55,7 +50,6 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 	    map.put(user, pwd);
 
 	    db.commit(); // Always remember to commit after modifications
-	 //   db.close();
 	}
 	
 
@@ -70,8 +64,6 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 			return db;
 		}
 	}
-
-
 
 	@Override
 	public boolean login(String checkUser, String checkPwd) {
@@ -109,19 +101,85 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 
 
 	@Override
-	public String[] loadCarteMagic() { //SECONDO ME LA PAGINA è DA CAMBIARE, COSì DA AVERE TRE PULSANTI: UNO PER CARTE POKEMON UNO MAGIC E UNO YUGIOH, MAGARI TUTTE E TRE COMUNQUE SULLA STESSA TABELLA, SVUOTANDOLA DI VOLTA IN VOLTA. (POI IMPLEMENTARE UN FILTRO O CHE SO IO)
+	public String[] loadCarteMagic(boolean soloPersonali) { //SECONDO ME LA PAGINA è DA CAMBIARE, COSì DA AVERE TRE PULSANTI: UNO PER CARTE POKEMON UNO MAGIC E UNO YUGIOH, MAGARI TUTTE E TRE COMUNQUE SULLA STESSA TABELLA, SVUOTANDOLA DI VOLTA IN VOLTA. (POI IMPLEMENTARE UN FILTRO O CHE SO IO)
 		// TODO Auto-generated method stub
 		DB db = getDB();
-		Map<Integer, String> cardMap = db.hashMap(MAGIC_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
+		Map<Integer, String> cardMap;
+		if(soloPersonali) {
+		cardMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();}
+		else {
+		cardMap = db.hashMap(MAGIC_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
+		}
+		
+		
 		List<String> symbols = new ArrayList<String>();
 		Set<Integer> keys = cardMap.keySet();
 		for(Integer key : keys) {
 			symbols.add(cardMap.get(key));
+			System.out.println("chiave: " + key + "; Valore: " +cardMap.get(key));
 		}
 		return symbols.toArray(new String[0]);
 		
 		
 			}
+
+
+
+	@Override
+	public void addCard(String actualUser, String stringCard) {
+		// TODO Auto-generated method stub
+		
+		
+		
+		DB db = getDB();		//PERSONAL_CARD_TREEMAP_NAME
+		
+		Map<Integer, String> cardPersonalMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME)
+                .keySerializer(Serializer.INTEGER)
+                .valueSerializer(Serializer.STRING)
+                .createOrOpen();
+		
+		 int newKey = 1;
+		 while (cardPersonalMap.containsKey(newKey)) {
+	            newKey++;
+	        }
+		 
+			System.out.println("chiave: " + newKey + "; Valore: " +stringCard);
+
+		 
+		 cardPersonalMap.put(newKey, stringCard);
+		 db.commit();
+		 		
+		//ora provo a leggere la più alta delle chiavi e a inserire come chiave il numero successivo, poi 
+		//actualuser non si può fare, lo devo mettere nella carta, quindi di là metto il get e set e la variabile per user. Poi vie
+		//stringcard
+		//poi printo per avere chiaro cosa sto facendo 
+		
+	}
+
+
+	@Override
+	public void rimuoviCarta(String stringCard) {
+		// TODO Auto-generated method stub
+		
+		DB db = getDB();
+		
+		Map<Integer, String> cardPersonalMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME)
+                .keySerializer(Serializer.INTEGER)
+                .valueSerializer(Serializer.STRING)
+                .createOrOpen();
+		
+		Iterator<Map.Entry<Integer, String>> iterator = cardPersonalMap.entrySet().iterator();
+		while (iterator.hasNext()) {
+		    Map.Entry<Integer, String> entry = iterator.next();
+		    if (stringCard.equals(entry.getValue())) {
+		        // Remove the entry if the value matches the target
+		        iterator.remove();
+		    }
+		}
+		
+		 db.commit();
+		
+	}
 	
 	
 	

@@ -7,10 +7,21 @@ public class Card implements Serializable{
 	protected int ID;
 	protected String tipoGioco;
 	protected String condizione;
+	protected String proprietario;
 	
 	public void setID(int ID) {
 	this.ID = ID;
 	}
+	
+	
+	public void setProprietario(String proprietario) {
+	this.proprietario = proprietario;
+	}
+	
+	public String getProprietario() {
+	return proprietario;
+	}
+	
 	
 	public void setTipoGioco(String tipoGioco) {
 	this.tipoGioco = tipoGioco;
@@ -28,8 +39,8 @@ public class Card implements Serializable{
         return tipoGioco;
     }
     
-    public int getCondizione() {
-        return ID;
+    public String getCondizione() {
+        return condizione;
     }
 	
 	

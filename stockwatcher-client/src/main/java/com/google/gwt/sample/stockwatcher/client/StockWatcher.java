@@ -5,6 +5,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.sample.stockwatcher.shared.StockPriceService;
 import com.google.gwt.sample.stockwatcher.shared.StockPriceServiceAsync;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -17,17 +18,20 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-
+import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
+import java.util.ArrayList;
 import java.util.List;
-
 
 
 public class StockWatcher implements EntryPoint {
 
+    private Card actualCard;
+    private String actualUser;
     private VerticalPanel mainPanel = new VerticalPanel();
     private FlexTable cardsFlexTable = new FlexTable();
     private HorizontalPanel addPanel = new HorizontalPanel();
@@ -56,6 +60,7 @@ public class StockWatcher implements EntryPoint {
     private Button showPokemonButton = new Button("Pokemon");
     private Button showYugiohButton = new Button("Yugi-Oh");
     private TextBox textBox = new TextBox();
+    private TextBox userTextBox = new TextBox();
     private TextBox artistTextBox = new TextBox();
     private TextBox nameTextBox = new TextBox();
     private TextBox textTextBox = new TextBox();
@@ -79,9 +84,13 @@ public class StockWatcher implements EntryPoint {
     private Label isReprintLabel = new Label("Is Reprint:");
     private Label idLabel = new Label("ID:");
     private ListBox listBox = new ListBox();
+    private Label condizioneLabel = new Label("Condizione:");
+    private TextBox condizioneTextBox = new TextBox();
+    private Button aggiungiCarta = new Button("Aggiungi Carta"); 
+    private Button rimuoviCarta = new Button("Rimuovi Carta");
+    private CheckBox checkPersonal = new CheckBox("Solo Carte Personali");
     private Button cercaProprietari = new Button("Cerca Proprietari"); //fa comparire una lista di soggetti ciascuno col pulsantino che manda agli scambi
-    private Button cercaAcquirenti = new Button("Cerca Acquirenti"); //idem come sopra, ma con i soggettiche vogliono la carta
-    private Button aggiungiCarta = new Button("Aggiungi Carta"); //prende il valore della combobox con lo stato della carta
+    private Button cercaAcquirenti = new Button("Cerca Acquirenti"); //idem come sopra, ma con i soggetti che vogliono la carta
     //devo aggiungere anche il gioco della carta, così a seconda, mette nella "tabella" giusta
     //queste robe ancora non le ho fatte, ma mi appunto come vorrei implementarle
 
@@ -122,7 +131,10 @@ public class StockWatcher implements EntryPoint {
         addPanel.add(iscrivitiButton);
         addPanel.addStyleName("addPanel");
 
-
+		// Assemble Persistence panel
+		//persistPanel.add(saveSymbolsButton);
+		//persistPanel.add(loadSymbolsButton);
+		//persistPanel.add(loadPWDButton);
 
 		// Assemble Main panel.
         errorMsgLabel.setStyleName("errorMessage");
@@ -151,6 +163,7 @@ public class StockWatcher implements EntryPoint {
         addPanel.add(showYugiohButton); 
         addPanel.add(textBox);
         addPanel.add(cardsFlexTable);
+        addPanel.add(checkPersonal);
 
        // addPanel.add(test);
         
@@ -177,20 +190,27 @@ public class StockWatcher implements EntryPoint {
         addPanel.add(isReprintTextBox);
         addPanel.add(idLabel);
         addPanel.add(idTextBox);
+        addPanel.add(userTextBox);
+        
+        addPanel.add(condizioneLabel);
+        addPanel.add(condizioneTextBox);
 
         
         addPanel.add(listBox);
-        
-        linkToLogin(addPanel);
         listBox.addItem("Sopravvissuta");
         listBox.addItem("Decente");
         listBox.addItem("Buona");
         listBox.addItem("Ottima");
         listBox.addItem("Sigillata");
-
-
-
-
+        
+        addPanel.add(cercaProprietari);
+        addPanel.add(cercaAcquirenti);
+        addPanel.add(aggiungiCarta);
+        addPanel.add(rimuoviCarta);
+        
+        linkToLogin(addPanel);
+     
+        userTextBox.setReadOnly(true);
         
         toIscrizioneButton.addClickHandler(new ClickHandler() {
     		@Override
@@ -206,17 +226,19 @@ public class StockWatcher implements EntryPoint {
     			
     		     linkToHome(addPanel);
     		}});
-        
-        
-    
-        
-        
-        
+
         
         showMagicButton.addClickHandler(new ClickHandler() {
 			@Override 
 			public void onClick(ClickEvent event) {
-				stockPriceSvc.loadCarteMagic(new AsyncCallback<String[]>() {
+				
+				
+				
+				boolean soloPersonali = checkPersonal.getValue();
+				//soloPersonali lo passo al metodo e se è true invece che leggere da magic cards, legge da magic personal
+				//il metodo di parsing deve essere sempre uguale
+				
+				stockPriceSvc.loadCarteMagic(soloPersonali, new AsyncCallback<String[]>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						Window.alert("Cannot load cards: "
@@ -235,7 +257,14 @@ public class StockWatcher implements EntryPoint {
 						for (String carta : carte) {			    		     
 							 //addStock(symbol); 
 							Magic_card magicCard = parseJsonString(carta);
+							if(soloPersonali)
+							{if(magicCard.getProprietario() == actualUser)
 							addCarteMagic(magicCard, addPanel);
+							}
+							else {
+							addCarteMagic(magicCard, addPanel);
+							}
+
 						}
 					}
 
@@ -243,19 +272,13 @@ public class StockWatcher implements EntryPoint {
 				});
 			}
 		});
-		
-        
-        
-        
-        
-    	
-        
-        
+
         
         loginButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				stockPriceSvc.login(checkUserTextBox.getText().toUpperCase().trim(), checkPwdTextBox.getText().trim(),
+				String userTxt = checkUserTextBox.getText().toUpperCase().trim();
+				stockPriceSvc.login(userTxt, checkPwdTextBox.getText().trim(),
 						new AsyncCallback<Boolean>() {
 							@Override
 							public void onFailure(Throwable caught) {
@@ -267,6 +290,8 @@ public class StockWatcher implements EntryPoint {
 							public void onSuccess(Boolean check) {
 								if (check){
 									Window.alert("loggato con successo");
+									actualUser = userTxt;
+									userTextBox.setText(userTxt);
 									linkToHome(addPanel);
 								}
 								else
@@ -277,6 +302,73 @@ public class StockWatcher implements EntryPoint {
 		});
         
         
+        
+        aggiungiCarta.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				actualCard.setCondizione(listBox.getSelectedValue());
+				actualCard.setProprietario(actualUser);
+				String stringCard = "";
+				if(actualCard instanceof Magic_card)
+				{stringCard = convertMagicCardToJsonString((Magic_card) actualCard);}
+				else if (actualCard instanceof Pokemon_card)
+				{}
+				else // if (actualCard instanceof Yugioh_card) NON SERVE, SE NON è MAGIC O POKEMON ALLORA è YUGI. 
+				{}
+				
+				//MAGARI MI TIRO DIETRO UNA STRINGA PER DIRE SE METTERE NEL DATASET MAGIC, YUGIOH O POKEMON
+
+				
+				stockPriceSvc.addCard(actualUser, stringCard, new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert("aggiunta carta fallita: "
+										+ caught.getMessage());
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								
+									Window.alert("carta inserita ok!");							
+								
+							}
+						});
+			}
+		});
+        
+        
+        
+        rimuoviCarta.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				
+				String stringCard = "";
+				if(actualCard instanceof Magic_card)
+				{stringCard = convertMagicCardToJsonString((Magic_card) actualCard);}
+				else if (actualCard instanceof Pokemon_card)
+				{}
+				else // if (actualCard instanceof Yugioh_card) NON SERVE, SE NON è MAGIC O POKEMON ALLORA è YUGI. 
+				{}
+				
+				
+				stockPriceSvc.rimuoviCarta(stringCard, new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert("test failed: "
+										+ caught.getMessage());
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								
+									Window.alert("Rimossa");							
+								
+							}
+						});
+			}
+		});
         
         
         
@@ -358,10 +450,9 @@ public class StockWatcher implements EntryPoint {
         }
     });
 
-
-
-    
 }
+    
+    
     
     
     public Magic_card parseJsonString(String jsonString) {
@@ -378,13 +469,42 @@ public class StockWatcher implements EntryPoint {
         String isFullArt = jsonObject.get("isFullArt").isString().stringValue();
         String isPromo = jsonObject.get("isPromo").isString().stringValue();
         String isReprint = jsonObject.get("isReprint").isString().stringValue();
+        String condizione = jsonObject.containsKey("condizione") ? jsonObject.get("condizione").isString().stringValue() : null;
+        String proprietario = jsonObject.containsKey("proprietario") ? jsonObject.get("proprietario").isString().stringValue() : null;
+
+
         int id = (int) jsonObject.get("ID").isNumber().doubleValue();
         
         Magic_card mc = new Magic_card(artist, name, text, types, rarity, hasFoil, isAlternative, isFullArt, isPromo, isReprint);
-        
+        mc.setTipoGioco("Magic");
         mc.setID(id);
+        mc.setCondizione(condizione);
+        mc.setProprietario(proprietario);
 
         return mc;
+    }
+    
+    
+    
+    public String convertMagicCardToJsonString(Magic_card magicCard) {
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("artist", new JSONString(magicCard.getArtist()));
+        jsonObject.put("name", new JSONString(magicCard.getName()));
+        jsonObject.put("text", new JSONString(magicCard.getText()));
+        jsonObject.put("types", new JSONString(magicCard.getTypes()));
+        jsonObject.put("rarity", new JSONString(magicCard.getRarity()));
+        jsonObject.put("hasFoil", new JSONString(magicCard.getHasFoil()));
+        jsonObject.put("isAlternative", new JSONString(magicCard.getIsAlternative()));
+        jsonObject.put("isFullArt", new JSONString(magicCard.getIsFullArt()));
+        jsonObject.put("isPromo", new JSONString(magicCard.getIsPromo()));
+        jsonObject.put("isReprint", new JSONString(magicCard.getIsReprint()));
+        jsonObject.put("condizione", new JSONString(magicCard.getCondizione()));
+        jsonObject.put("proprietario", new JSONString(magicCard.getProprietario()));
+        //jsonObject.put("isReprint", new JSONString(magicCard.getTipoGioco()));
+        jsonObject.put("ID", new JSONNumber(magicCard.getID()));
+
+        return jsonObject.toString();
     }
     
     
@@ -404,6 +524,7 @@ public class StockWatcher implements EntryPoint {
         //cardsFlexTable.getCellFormatter().addStyleName(row, 3, "watchListRemoveColumn");
         
  
+        //questo button X è fraintendibile e andrebbe tolto
         Button removeStockButton = new Button("x");
         removeStockButton.addStyleDependentName("remove");
         removeStockButton.addClickHandler(new ClickHandler() {
@@ -414,7 +535,7 @@ public class StockWatcher implements EntryPoint {
             }
         });
         cardsFlexTable.setWidget(row, 3, removeStockButton);
-        
+       // cardsFlexTable.setText(row, 3, carta.getProprietario());
         
         
         
@@ -425,7 +546,7 @@ public class StockWatcher implements EntryPoint {
         expand.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
             	int c = cards.indexOf(carta);
-                //metto un link to magiccard metodo che prende in input il codicillo della carta e se ne acchiappa le info.
+            	actualCard = carta;
                 linkToMagicCard((Magic_card) cards.get(c), panel);                
             }
         });
@@ -448,11 +569,12 @@ public class StockWatcher implements EntryPoint {
     private void linkToMagicCard(Magic_card card, Panel panel) {
     	
     	
+    	
     	hideAllElements(panel);
     	home.setVisible(true);  
     	cercaCarte.setVisible(true);
     	//textBox.setVisible(true);
-    	
+    	userTextBox.setVisible(true);
     	//textBox.setText(card.toString());
     	artistTextBox.setVisible(true);
     	nameTextBox.setVisible(true);
@@ -479,7 +601,7 @@ public class StockWatcher implements EntryPoint {
     	idLabel.setVisible(true);
     	listBox.setVisible(true);
     	
-    	
+
     	
     	artistTextBox.setText(card.getArtist());
         nameTextBox.setText(card.getName());
@@ -492,6 +614,16 @@ public class StockWatcher implements EntryPoint {
         isPromoTextBox.setText(card.getIsPromo());
         isReprintTextBox.setText(card.getIsReprint());
         idTextBox.setText(String.valueOf(card.getID()));
+        
+        if(card.getCondizione() != null) {
+        	condizioneLabel.setVisible(true);
+        	condizioneTextBox.setVisible(true);
+        	condizioneTextBox.setText(card.getCondizione());
+        	condizioneTextBox.setReadOnly(true);
+        	rimuoviCarta.setVisible(true);
+
+      }
+
         
      // Set TextBoxes as read-only
         artistTextBox.setReadOnly(true);
@@ -506,7 +638,9 @@ public class StockWatcher implements EntryPoint {
         isReprintTextBox.setReadOnly(true);
         idTextBox.setReadOnly(true);
 
-
+        cercaProprietari.setVisible(true);
+        cercaAcquirenti.setVisible(true);
+        aggiungiCarta.setVisible(true);
     		
     }
     
@@ -539,6 +673,8 @@ public class StockWatcher implements EntryPoint {
     	cercaCarte.setVisible(true);
     	creaDeck.setVisible(true);
     	scambi.setVisible(true);  
+    	userTextBox.setVisible(true);
+
     }
     
     
@@ -550,7 +686,11 @@ public class StockWatcher implements EntryPoint {
     	showMagicButton.setVisible(true); 
         showPokemonButton.setVisible(true); 
         showYugiohButton.setVisible(true); 
+        checkPersonal.setVisible(true);
+    	userTextBox.setVisible(true);
+
     	
+
     }
     
     

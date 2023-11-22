@@ -7,6 +7,8 @@ public class Card implements Serializable{
 	protected int ID;
 	protected String tipoGioco;
 	protected String condizione;
+	protected String proprietario;
+
 	
 	public void setID(int ID) {
 	this.ID = ID;
@@ -33,9 +35,19 @@ public class Card implements Serializable{
         return name;
     }
     
-    public int getCondizione() {
-        return ID;
+    public String getCondizione() {
+        return condizione;
     }
+
+	
+	
+	public void setProprietario(String proprietario) {
+	this.proprietario = proprietario;
+	}
+	
+	public String getProprietario() {
+	return proprietario;
+	}
 	
 	
 }

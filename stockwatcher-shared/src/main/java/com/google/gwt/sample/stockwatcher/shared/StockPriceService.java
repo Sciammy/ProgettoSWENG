@@ -7,7 +7,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("stockPrices")
 public interface StockPriceService extends RemoteService {
 
-
 	void addAccount(String user, String pwd);
 
 	boolean controlAccount(String user);
@@ -16,7 +15,11 @@ public interface StockPriceService extends RemoteService {
 	
 	void test();
 	
-	String[] loadCarteMagic();
+	String[] loadCarteMagic(boolean soloPersonali);
+	
+	void addCard(String actualUser, String stringCard);
+
+	void rimuoviCarta(String stringCard);
 
 
 }
