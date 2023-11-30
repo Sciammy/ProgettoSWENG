@@ -8,7 +8,29 @@ public class Card implements Serializable{
 	protected String tipoGioco;
 	protected String condizione;
 	protected String proprietario;
+	protected String acquirente;
+	protected String testoPersonale;
 
+	
+	public void setTestoPersonale(String testoPersonale) {
+	this.testoPersonale = testoPersonale;
+	}
+	
+	public String getTestoPersonale() {
+	return testoPersonale;
+	}
+	
+
+	
+	public void setAcquirente(String acquirente) {
+	this.acquirente = acquirente;
+	}
+	
+	public String getAcquirente() {
+	return acquirente;
+	}
+	
+	
 	
 	public void setID(int ID) {
 	this.ID = ID;

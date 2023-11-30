@@ -1,5 +1,7 @@
 package com.google.gwt.sample.stockwatcher.shared;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -15,11 +17,17 @@ public interface StockPriceService extends RemoteService {
 	
 	void test();
 	
-	String[] loadCarteMagic(boolean soloPersonali);
+	String[] loadCarteMagic(boolean cercaAcquirenti, boolean soloPersonali);
 	
-	void addCard(String actualUser, String stringCard);
+	void addCard(boolean desiderata, String actualUser, String stringCard);
 
-	void rimuoviCarta(String stringCard);
-
+	boolean rimuoviCarta(boolean desiderata, String stringCard);
+	
+	void addProposta(String scambioString);
+	
+	String[] loadProposteScambi();
+	
+	void gestisciScambio(boolean accettato, String scambio, String proponente, List<String> actualCard, String actualUser,
+			List<String> newCard);
 
 }
