@@ -110,12 +110,12 @@ public class Magic_card extends Card{
     public void setIsReprint(String isReprint) {
         this.isReprint = isReprint;
     }
-    
-    
+
+
     @Override
     public String toString() {
         return "ID: " + ID + "Gico: " + tipoGioco
-        		+ "YourClass{" +
+                + "YourClass{" +
                 "artist='" + artist + '\'' +
                 ", name='" + name + '\'' +
                 ", text='" + text + '\'' +

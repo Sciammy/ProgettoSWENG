@@ -77,7 +77,7 @@ public class Pokemon_card extends Card{
     @Override
     public String toString() {
         return "ID: " + ID + "Gico: " + tipoGioco
-        		+ "PokemonCard{" +
+                + "PokemonCard{" +
                 "illustrator='" + illustrator + '\'' +
                 ", image='" + image + '\'' +
                 ", name='" + name + '\'' +

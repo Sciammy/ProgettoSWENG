@@ -17,7 +17,7 @@ public class Scambio {
         this.offerta = new ArrayList<>();
         this.richiesta = new ArrayList<>();
     }
-    
+
     // Getter for proponente
     public String getProponente() {
         return proponente;
@@ -42,8 +42,8 @@ public class Scambio {
     public List<Card> getOfferta() {
         return offerta;
     }
-    
-    
+
+
     public void setOfferta(List<Card> offerta) {
         this.offerta = offerta;
     }
@@ -62,32 +62,32 @@ public class Scambio {
             offerta.remove(card);
         }
     }
-    
+
     public String getTitoloOfferta() {
-    	String titolo = "";
-    	for(Card carta : offerta) {
-    		titolo = titolo + carta.getName() + "("+ carta.getCondizione() + "); ";
-    	}
-    	   titolo = titolo.trim();	
-    	return titolo;
+        String titolo = "";
+        for(Card carta : offerta) {
+            titolo = titolo + carta.getName() + "("+ carta.getCondizione() + "); ";
+        }
+        titolo = titolo.trim();
+        return titolo;
     }
-    
-    
-    
+
+
+
     public String getTitoloRichiesta() {
-    	String titolo = "";
-    	for(Card carta : richiesta) {
-    		titolo = titolo + carta.getName() + "("+ carta.getCondizione() + "); ";
-    	}
-    	   titolo = titolo.trim();	
-    	return titolo;
+        String titolo = "";
+        for(Card carta : richiesta) {
+            titolo = titolo + carta.getName() + "("+ carta.getCondizione() + "); ";
+        }
+        titolo = titolo.trim();
+        return titolo;
     }
-    
-    
+
+
     // Add a Card to the richiesta list
     public void addCardToRichiesta(Card card) {
         if (richiesta == null) {
-        	richiesta = new ArrayList<>();
+            richiesta = new ArrayList<>();
         }
         richiesta.add(card);
     }
@@ -95,12 +95,12 @@ public class Scambio {
     // Remove a Card from the richiesta list
     public void removeCardFromRichiesta(Card card) {
         if (richiesta != null) {
-        	richiesta.remove(card);
+            richiesta.remove(card);
         }
     }
-    
-    
-    
+
+
+
 
     // Getter for richiesta
     public List<Card> getRichiesta() {

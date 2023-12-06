@@ -73,7 +73,7 @@ public class Yugioh_card extends Card{
     @Override
     public String toString() {
         return "ID: " + ID + "Gico: " + tipoGioco
-        		+ "YugiohCard{" +
+                + "YugiohCard{" +
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", desc='" + desc + '\'' +

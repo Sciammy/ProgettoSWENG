@@ -5,9 +5,9 @@ import java.io.Serializable;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class StockPrice implements Serializable, IsSerializable {
-	private static final long serialVersionUID = 6920472853042767550L;
+    private static final long serialVersionUID = 6920472853042767550L;
 
-	private String symbol;
+    private String symbol;
     private double price;
     private double change;
 

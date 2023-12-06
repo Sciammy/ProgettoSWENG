@@ -77,7 +77,7 @@ public class Pokemon_card extends Card{
     @Override
     public String toString() {
         return "ID: " + ID + "Gico: " + tipoGioco
-        		+ "PokemonCard{" +
+                + "PokemonCard{" +
                 "illustrator='" + illustrator + '\'' +
                 ", image='" + image + '\'' +
                 ", name='" + name + '\'' +
@@ -87,74 +87,20 @@ public class Pokemon_card extends Card{
                 '}';
     }
 
-    public static class Variants implements Serializable{
-        private boolean firstEdition;
-        private boolean holo;
-        private boolean normal;
-        private boolean reverse;
-        private boolean wPromo;
-
-        public Variants(boolean firstEdition, boolean holo, boolean normal, boolean reverse, boolean wPromo) {
-            this.firstEdition = firstEdition;
-            this.holo = holo;
-            this.normal = normal;
-            this.reverse = reverse;
-            this.wPromo = wPromo;
+    public String getTypesString() {
+        // TODO Auto-generated method stub
+        if (types == null) {
+            return "---";
         }
+        else {
+            String tipi = "";
+            for (String tipo : types) {
+                tipi = tipi + tipo + " ";
+            }
 
-        // Default constructor
-        public Variants() {
-        }
-
-        public boolean isFirstEdition() {
-            return firstEdition;
-        }
-
-        public void setFirstEdition(boolean firstEdition) {
-            this.firstEdition = firstEdition;
-        }
-
-        public boolean isHolo() {
-            return holo;
-        }
-
-        public void setHolo(boolean holo) {
-            this.holo = holo;
-        }
-
-        public boolean isNormal() {
-            return normal;
-        }
-
-        public void setNormal(boolean normal) {
-            this.normal = normal;
-        }
-
-        public boolean isReverse() {
-            return reverse;
-        }
-
-        public void setReverse(boolean reverse) {
-            this.reverse = reverse;
-        }
-
-        public boolean iswPromo() {
-            return wPromo;
-        }
-
-        public void setwPromo(boolean wPromo) {
-            this.wPromo = wPromo;
-        }
-
-        @Override
-        public String toString() {
-            return "Variants{" +
-                    "firstEdition=" + firstEdition +
-                    ", holo=" + holo +
-                    ", normal=" + normal +
-                    ", reverse=" + reverse +
-                    ", wPromo=" + wPromo +
-                    '}';
+            return tipi.trim();
         }
     }
+
+
 }

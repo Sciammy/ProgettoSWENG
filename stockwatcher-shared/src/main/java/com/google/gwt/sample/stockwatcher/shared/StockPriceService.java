@@ -12,22 +12,23 @@ public interface StockPriceService extends RemoteService {
 	void addAccount(String user, String pwd);
 
 	boolean controlAccount(String user);
-	
-	boolean login(String checkUser, String checkPwd);
-	
-	void test();
-	
-	String[] loadCarteMagic(boolean cercaAcquirenti, boolean soloPersonali);
-	
-	void addCard(boolean desiderata, String actualUser, String stringCard);
 
-	boolean rimuoviCarta(boolean desiderata, String stringCard);
-	
+	boolean login(String checkUser, String checkPwd);
+
+	void test();
+
+	String[] loadCarte(String contesto, boolean cercaAcquirenti, boolean soloPersonali);
+
+	void addCard(String contesto, boolean desiderata, String actualUser, String stringCard);
+
+	boolean rimuoviCarta(String contesto, boolean desiderata, String stringCard);
+
 	void addProposta(String scambioString);
-	
+
 	String[] loadProposteScambi();
-	
-	void gestisciScambio(boolean accettato, String scambio, String proponente, List<String> actualCard, String actualUser,
-			List<String> newCard);
+
+	void gestisciScambio(String context, boolean accettato, String scambio, String proponente, List<String> actualCard, String actualUser,
+						 List<String> newCard);
+
 
 }
