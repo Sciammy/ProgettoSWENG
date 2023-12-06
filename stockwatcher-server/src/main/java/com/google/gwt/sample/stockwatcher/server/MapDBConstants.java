@@ -1,7 +1,7 @@
 package com.google.gwt.sample.stockwatcher.server;
 
 public interface MapDBConstants {
-    final static String DB_FILENAME = "db";
+	final static String DB_FILENAME = "db";
     //final static String SYMBOLS_TREEMAP_NAME = "symbols";
     final static String USER_TREEMAP_NAME = "user";
     final static String PWD_TREEMAP_NAME = "pwd";
@@ -16,4 +16,7 @@ public interface MapDBConstants {
     final static String PERSONAL_DESIDERATA_POKEMONCARD_TREEMAP_NAME = "desiderata_pokemon_card";
     final static String PERSONAL_DESIDERATA_YUGIOHCARD_TREEMAP_NAME = "desiderata_yughioh_card";
     final static String PROPOSTA_TREEMAP_NAME ="proposte_di_scambio";
+	final static String PERSONAL_MAGIC_DECK_HASHMAP_NAME = "magic_deck";
+	final static String PERSONAL_YUGIOH_DECK_HASHMAP_NAME = "yugioh_deck";
+	final static String PERSONAL_POKEMON_DECK_HASHMAP_NAME = "pokemon_deck";
 }

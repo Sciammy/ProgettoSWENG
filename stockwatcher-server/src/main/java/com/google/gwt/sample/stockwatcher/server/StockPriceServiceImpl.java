@@ -28,15 +28,15 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 	//cambio content con key e vedo se migliora comunque ho la versione vecchia salvata
 	@Override
 	public boolean controlAccount(String user) {
-		DB db = getDB();
-		Map<String, String> map =  db.hashMap(USER_TREEMAP_NAME).keySerializer(Serializer.STRING)
-				.valueSerializer(Serializer.STRING)
-				.createOrOpen();
-		boolean userExists = map.containsKey(user); // Check if the user (key) exists
+	    DB db = getDB();
+	    Map<String, String> map =  db.hashMap(USER_TREEMAP_NAME).keySerializer(Serializer.STRING)
+	            .valueSerializer(Serializer.STRING)
+	            .createOrOpen();
+	    boolean userExists = map.containsKey(user); // Check if the user (key) exists
 
 
 
-		return userExists;
+	    return userExists;
 	}
 
 
@@ -46,16 +46,16 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 
 	@Override
 	public void addAccount(String user, String pwd) {
-		DB db = getDB();
-		Map<String, String> map =  db.hashMap(USER_TREEMAP_NAME).keySerializer(Serializer.STRING)
-				.valueSerializer(Serializer.STRING)
-				.createOrOpen();
+	    DB db = getDB();
+	    Map<String, String> map =  db.hashMap(USER_TREEMAP_NAME).keySerializer(Serializer.STRING)
+	            .valueSerializer(Serializer.STRING)
+	            .createOrOpen();
 
 
 
-		map.put(user, pwd);
+	    map.put(user, pwd);
 
-		db.commit(); // Always remember to commit after modifications
+	    db.commit(); // Always remember to commit after modifications
 	}
 
 
@@ -76,67 +76,60 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 
 	@Override
 	public boolean login(String checkUser, String checkPwd) {
-		DB db = getDB();
-		Map<String, String> map = db.hashMap(USER_TREEMAP_NAME).keySerializer(Serializer.STRING)
-				.valueSerializer(Serializer.STRING)
-				.createOrOpen();
+	    DB db = getDB();
+	    Map<String, String> map = db.hashMap(USER_TREEMAP_NAME).keySerializer(Serializer.STRING)
+	            .valueSerializer(Serializer.STRING)
+	            .createOrOpen();
 
-		// Log the state of the map and user existence
-		System.out.println("Map contents:");
-		for (Map.Entry<String, String> entry : map.entrySet()) {
-			System.out.println("User: " + entry.getKey() + ", Password: " + entry.getValue());
-		}
+	    // Log the state of the map and user existence
+	    System.out.println("Map contents:");
+	    for (Map.Entry<String, String> entry : map.entrySet()) {
+	        System.out.println("User: " + entry.getKey() + ", Password: " + entry.getValue());
+	    }
 
-		// Check if the user exists
-		if (map.containsKey(checkUser)) {
-			String storedPwd = map.get(checkUser);
+	    // Check if the user exists
+	    if (map.containsKey(checkUser)) {
+	        String storedPwd = map.get(checkUser);
 
-			// Check if the provided password matches the stored password for the user
-			if (storedPwd.equals(checkPwd)) {
-				return true;  // User exists and password is correct
-			}
-		}
+	        // Check if the provided password matches the stored password for the user
+	        if (storedPwd.equals(checkPwd)) {
+	            return true;  // User exists and password is correct
+	        }
+	    }
 
-		return false;  // User does not exist or password is incorrect
+	    return false;  // User does not exist or password is incorrect
 	}
-
-
-	public void test() {
-
-
-	}
-
 
 
 	@Override
-	public String[] loadCarte(String contesto, boolean cercaAcquirenti, boolean soloPersonali) { //SECONDO ME LA PAGINA è DA CAMBIARE, COSì DA AVERE TRE PULSANTI: UNO PER CARTE POKEMON UNO MAGIC E UNO YUGIOH, MAGARI TUTTE E TRE COMUNQUE SULLA STESSA TABELLA, SVUOTANDOLA DI VOLTA IN VOLTA. (POI IMPLEMENTARE UN FILTRO O CHE SO IO)
-		// TODO Auto-generated method stub
+	public String[] loadCarte(String contesto, boolean cercaAcquirenti, boolean soloPersonali) { 
+
 		DB db = getDB();
 		Map<Integer, String> cardMap;
 		System.out.println("entrato");
 		if(soloPersonali) {
 			if(contesto.equals("Magic"))
-				cardMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
+					cardMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
 			else if (contesto.equals("Pokemon"))
-				cardMap = db.hashMap(PERSONAL_POKEMONCARD_TREEMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
+				    cardMap = db.hashMap(PERSONAL_POKEMONCARD_TREEMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
 			else
 				cardMap = db.hashMap(PERSONAL_YUGIOHCARD_TREEMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
 		}
 		else {
 			if(contesto.equals("Magic"))
-				cardMap = db.hashMap(MAGIC_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
+					cardMap = db.hashMap(MAGIC_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
 			else if (contesto.equals("Pokemon")) {
 				cardMap = db.hashMap(POKEMON_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
-				System.out.println("Pokemon preso");}
+			System.out.println("Pokemon preso");}
 			else
 				cardMap = db.hashMap(YUGIOH_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
 		}
 		if(cercaAcquirenti) {
 			if(contesto.equals("Magic"))
-				cardMap= db.hashMap(PERSONAL_DESIDERATA_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
+					cardMap= db.hashMap(PERSONAL_DESIDERATA_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else if (contesto.equals("Pokemon"))
 				cardMap= db.hashMap(PERSONAL_DESIDERATA_POKEMONCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
-			else
+				else
 				cardMap= db.hashMap(PERSONAL_DESIDERATA_YUGIOHCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 
 		}
@@ -149,7 +142,108 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 		}
 		return symbols.toArray(new String[0]);
 
+			}
+
+	@Override
+	public String[] loadCartePersonali(String contesto) {
+			// TODO Auto-generated method stub
+
+			DB db = getDB();
+			Map<Integer, String> cardMap;
+			System.out.println("entrato");
+			if(contesto.equals("Magic"))
+				cardMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
+			else if (contesto.equals("Pokemon"))
+			    cardMap = db.hashMap(PERSONAL_POKEMONCARD_TREEMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
+			else
+				cardMap = db.hashMap(PERSONAL_YUGIOHCARD_TREEMAP_NAME, Serializer.INTEGER, Serializer.STRING).createOrOpen();
+
+			List<String> symbols = new ArrayList<String>();
+			Set<Integer> keys = cardMap.keySet();
+			for(Integer key : keys) {
+				symbols.add(cardMap.get(key));
+				System.out.println("chiave: " + key + "; Valore: " +cardMap.get(key));
+			}
+			return symbols.toArray(new String[0]);
 	}
+
+	@Override
+	public String[] loadDeckPersonali(String contesto) {
+		// TODO Auto-generated method stub
+
+		DB db = getDB();
+		Map<String, String> deckMap;
+		System.out.println("entrato");
+		if(contesto.equals("Magic"))
+			deckMap = db.hashMap(PERSONAL_MAGIC_DECK_HASHMAP_NAME, Serializer.STRING, Serializer.STRING).createOrOpen();
+		else if (contesto.equals("Pokemon"))
+		    deckMap = db.hashMap(PERSONAL_POKEMON_DECK_HASHMAP_NAME, Serializer.STRING, Serializer.STRING).createOrOpen();
+		else
+			deckMap = db.hashMap(PERSONAL_YUGIOH_DECK_HASHMAP_NAME, Serializer.STRING, Serializer.STRING).createOrOpen();
+
+		List<String> symbols = new ArrayList<String>();
+		Set<String> keys = deckMap.keySet();
+		for(String key : keys) {
+			symbols.add(deckMap.get(key));
+			System.out.println("chiave: " + key + "; Valore: " +deckMap.get(key));
+		}
+		return symbols.toArray(new String[0]);
+	}
+
+	@Override
+	public String loadDeckList(String deckName, String contesto) {
+
+		deckName = deckName.toUpperCase();
+		DB db = getDB();
+		Map<String, String> deckMap;
+		System.out.println("inside");
+		if(contesto.equals("Magic")) {
+			deckMap = db.hashMap(PERSONAL_MAGIC_DECK_HASHMAP_NAME, Serializer.STRING, Serializer.STRING)
+			.createOrOpen();
+		} else if (contesto.equals("Pokemon")) {
+		    deckMap = db.hashMap(PERSONAL_POKEMON_DECK_HASHMAP_NAME, Serializer.STRING, Serializer.STRING)
+		    .createOrOpen();
+		} else {
+			deckMap = db.hashMap(PERSONAL_YUGIOH_DECK_HASHMAP_NAME, Serializer.STRING, Serializer.STRING)
+			.createOrOpen();
+		}
+		String deckStringResult = "";
+		Set<String> keys = deckMap.keySet();
+		for(String key : keys) {
+			if(key.equals(deckName)) {
+				deckStringResult = deckMap.get(key);
+			}
+		}
+		return deckStringResult;
+	}
+
+	public String[] loadCarteFromId(List<Integer> cardsId, String contesto) {
+		//preso in input un array con Id delle carte, restituisce un array con i file Json delle corrispondenti
+		DB db = getDB();
+		System.out.println("in arrivo dal main: " + cardsId.toString());
+		Map<Integer, String> cardMap;
+		if(contesto.equals("Magic")) {
+			cardMap = db.hashMap(MAGIC_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING)
+			.createOrOpen();
+		} else if (contesto.equals("Pokemon")) {
+			cardMap = db.hashMap(POKEMON_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING)
+		    .createOrOpen();
+		} else {
+			cardMap = db.hashMap(YUGIOH_HASHMAP_NAME, Serializer.INTEGER, Serializer.STRING)
+			.createOrOpen();
+		}
+		List<String> cardsJson = new ArrayList<String>();
+		Set<Integer> keys = cardMap.keySet();
+		for(Integer cardInDeck : cardsId) {		
+			if(keys.contains(cardInDeck)) {
+				cardsJson.add(cardMap.get(cardInDeck));
+				System.out.println("chiave: " + cardInDeck + "; Valore: " +cardMap.get(cardInDeck));
+			}
+		}
+		return cardsJson.toArray(new String[0]);
+	}
+
+
 
 
 
@@ -160,7 +254,7 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 		Map<Integer, String> cardPersonalMap;
 		if(!desiderata) {
 			if(contesto.equals("Magic"))
-				cardPersonalMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
+		cardPersonalMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else if (contesto.equals("Pokemon"))
 				cardPersonalMap = db.hashMap(PERSONAL_POKEMONCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else
@@ -169,7 +263,7 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 		}
 		else {
 			if(contesto.equals("Magic"))
-				cardPersonalMap = db.hashMap(PERSONAL_DESIDERATA_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
+			cardPersonalMap = db.hashMap(PERSONAL_DESIDERATA_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else if (contesto.equals("Pokemon"))
 				cardPersonalMap = db.hashMap(PERSONAL_DESIDERATA_POKEMONCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else
@@ -177,13 +271,13 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 		}
 
 		//prendo il primo intero disponibile
-		int newKey = 1;
-		while (cardPersonalMap.containsKey(newKey)) {
-			newKey++;
-		}
+		 int newKey = 1;
+		 while (cardPersonalMap.containsKey(newKey)) {
+	            newKey++;
+	        }
 
-		cardPersonalMap.put(newKey, stringCard);
-		db.commit();
+		 cardPersonalMap.put(newKey, stringCard);
+		 db.commit();
 
 	}
 
@@ -198,7 +292,7 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 		Map<Integer, String> cardPersonalMap;
 		if(!desiderata) {
 			if(contesto.equals("Magic"))
-				cardPersonalMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
+		cardPersonalMap = db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else if (contesto.equals("Pokemon"))
 				cardPersonalMap = db.hashMap(PERSONAL_POKEMONCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else
@@ -207,7 +301,7 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 		}
 		else {
 			if(contesto.equals("Magic"))
-				cardPersonalMap = db.hashMap(PERSONAL_DESIDERATA_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
+			cardPersonalMap = db.hashMap(PERSONAL_DESIDERATA_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else if (contesto.equals("Pokemon"))
 				cardPersonalMap = db.hashMap(PERSONAL_DESIDERATA_POKEMONCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else
@@ -217,17 +311,17 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 
 		Iterator<Map.Entry<Integer, String>> iterator = cardPersonalMap.entrySet().iterator();
 		while (iterator.hasNext()) {
-			Map.Entry<Integer, String> entry = iterator.next();
-			if (stringCard.equals(entry.getValue())) {
-				// cancella se uguale al target
-				iterator.remove();
-				deleted = true;
-				break;
-			}
+		    Map.Entry<Integer, String> entry = iterator.next();
+		    if (stringCard.equals(entry.getValue())) {
+		        // cancella se uguale al target
+		        iterator.remove();
+		        deleted = true;
+		        break;
+		    }
 		}
 
-		db.commit();
-		return deleted;
+		 db.commit();
+		 return deleted;
 
 	}
 
@@ -235,35 +329,27 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 
 	@Override
 	public void addProposta(String scambioString) {
-		// TODO Auto-generated method stub
-
 
 		DB db = getDB();
 
-
 		Map<Integer, String> ScambioPropostaMap = db.hashMap(PROPOSTA_TREEMAP_NAME)
-				.keySerializer(Serializer.INTEGER)
-				.valueSerializer(Serializer.STRING)
-				.createOrOpen();
-
+                .keySerializer(Serializer.INTEGER)
+                .valueSerializer(Serializer.STRING)
+                .createOrOpen();
 
 		int newKey = 1;
-		while (ScambioPropostaMap.containsKey(newKey)) {
-			newKey++;
-		}
+		 while (ScambioPropostaMap.containsKey(newKey)) {
+	            newKey++;
+	        }
+		 ScambioPropostaMap.put(newKey, scambioString);
+		 db.commit();
 
-		ScambioPropostaMap.put(newKey, scambioString);
-		db.commit();
-
-
-		System.out.println("Map contents:");
-		for (Map.Entry<Integer, String> entry : ScambioPropostaMap.entrySet()) {
-			System.out.println( entry.getValue()
-					+ "\n" );
-		}
-
+		 System.out.println("Map contents:");
+		    for (Map.Entry<Integer, String> entry : ScambioPropostaMap.entrySet()) {
+		        System.out.println( entry.getValue()
+		        		+ "\n" );
+		    }
 	}
-
 
 
 	@Override
@@ -272,9 +358,9 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 		DB db = getDB();
 
 		Map<Integer, String> ScambioPropostaMap = db.hashMap(PROPOSTA_TREEMAP_NAME)
-				.keySerializer(Serializer.INTEGER)
-				.valueSerializer(Serializer.STRING)
-				.createOrOpen();
+                .keySerializer(Serializer.INTEGER)
+                .valueSerializer(Serializer.STRING)
+                .createOrOpen();
 
 		List<String> symbols = new ArrayList<String>();
 		Set<Integer> keys = ScambioPropostaMap.keySet();
@@ -291,69 +377,248 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 
 	@Override
 	public void gestisciScambio(String context, boolean accettato, String scambio, String proponente, List<String> actualCard,
-								String actualUser, List<String> newCard) {
+			String actualUser, List<String> newCard) {
 
 		DB db = getDB();
 
 		Map<Integer, String> ScambioPropostaMap = db.hashMap(PROPOSTA_TREEMAP_NAME)
-				.keySerializer(Serializer.INTEGER)
-				.valueSerializer(Serializer.STRING)
-				.createOrOpen();
+                .keySerializer(Serializer.INTEGER)
+                .valueSerializer(Serializer.STRING)
+                .createOrOpen();
 
 		//tolgo l'offerta
 		Iterator<Map.Entry<Integer, String>> iterator = ScambioPropostaMap.entrySet().iterator();
 		while (iterator.hasNext()) {
-			Map.Entry<Integer, String> entry = iterator.next();
-			if (scambio.equals(entry.getValue())) {
-				// cancella se uguale al target
-				iterator.remove();
-				break;
-			}
+		    Map.Entry<Integer, String> entry = iterator.next();
+		    if (scambio.equals(entry.getValue())) {
+		        // cancella se uguale al target
+		        iterator.remove();
+		        break;
+		    }
 		}
-
 		if(accettato) {//se rifiutato son in realtà a posto
 
 			Map<Integer, String> ScambioPropostaMap2;
 
 			if(context.equals("Magic"))
-				ScambioPropostaMap2	= db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
+			ScambioPropostaMap2	= db.hashMap(PERSONAL_MAGICCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else if(context.equals("Pokemon"))
-				ScambioPropostaMap2	= db.hashMap(PERSONAL_POKEMONCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
+			ScambioPropostaMap2	= db.hashMap(PERSONAL_POKEMONCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 			else
-				ScambioPropostaMap2	= db.hashMap(PERSONAL_YUGIOHCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
-
+			ScambioPropostaMap2	= db.hashMap(PERSONAL_YUGIOHCARD_TREEMAP_NAME).keySerializer(Serializer.INTEGER).valueSerializer(Serializer.STRING).createOrOpen();
 
 			for(String carta : actualCard) {
 				Iterator<Map.Entry<Integer, String>> iterator2 = ScambioPropostaMap2.entrySet().iterator();
 				while (iterator2.hasNext()) {
-					Map.Entry<Integer, String> entry = iterator2.next();
-					if (carta.equals(entry.getValue())) {
-						// cancella se uguale al target
-						iterator2.remove();
-						break;
-					}
+				    Map.Entry<Integer, String> entry = iterator2.next();
+				    if (carta.equals(entry.getValue())) {
+				        // cancella se uguale al target
+				        iterator2.remove();
+				        break;
+				    }
 				}
 			}
-
 			int newKey = 1;
-			while (ScambioPropostaMap2.containsKey(newKey)) {
-				newKey++;
-			}
-
+			 while (ScambioPropostaMap2.containsKey(newKey)) {
+		            newKey++;
+		        }
 			for(String carta : newCard){
-
-				ScambioPropostaMap2.put(newKey, carta);
-				newKey++;
-
+				 ScambioPropostaMap2.put(newKey, carta);
+				 newKey++;
 			}
+		}
+		 db.commit();
+	}
 
+	@Override
+	public boolean controlDeckName(String deckName, String contesto) {
+		//controlla che il nome scelto per il deck non esista già per quel gioco
+		//resituisce TRUE-> il nome esiste già | FALSE-> il nome è nuovo
+		DB db = getDB();
+		Map<String, String> deckMap;
+		boolean deckExists = false;
 
+		if(contesto.equals("Magic")) {
+			deckMap = db.hashMap(PERSONAL_MAGIC_DECK_HASHMAP_NAME)
+					.keySerializer(Serializer.STRING)
+					.valueSerializer(Serializer.STRING)
+					.createOrOpen();
+			deckExists = deckMap.containsKey(deckName);
+		}else if (contesto.equals("Pokemon")) {
+			deckMap = db.hashMap(PERSONAL_POKEMON_DECK_HASHMAP_NAME)
+					.keySerializer(Serializer.STRING)
+					.valueSerializer(Serializer.STRING)
+					.createOrOpen();
+			deckExists = deckMap.containsKey(deckName);
+		}else {
+			deckMap = db.hashMap(PERSONAL_YUGIOH_DECK_HASHMAP_NAME)
+					.keySerializer(Serializer.STRING)
+					.valueSerializer(Serializer.STRING)
+					.createOrOpen();
+			deckExists = deckMap.containsKey(deckName);
 		}
 
+		return deckExists;
+	}
 
+	@Override
+	public void addNewDeck(String deckName, String stringDeck, String contesto, String actualUser) {
+		deckName = deckName.toUpperCase();
+		if(!controlDeckName(deckName, contesto)) {
+		//aggiunge un nuovo deck al db per il determinato gioco
+			DB db = getDB();
+			Map<String, String> mapDeck;
+
+			if(contesto.equals("Magic")) {
+				mapDeck = db.hashMap(PERSONAL_MAGIC_DECK_HASHMAP_NAME)
+					.keySerializer(Serializer.STRING)
+					.valueSerializer(Serializer.STRING)
+					.createOrOpen();
+				mapDeck.put(deckName, stringDeck);
+			}else if (contesto.equals("Pokemon")) {
+				mapDeck = db.hashMap(PERSONAL_POKEMON_DECK_HASHMAP_NAME)
+					.keySerializer(Serializer.STRING)
+					.valueSerializer(Serializer.STRING)
+					.createOrOpen();
+				mapDeck.put(deckName, stringDeck);
+			}else {
+				mapDeck = db.hashMap(PERSONAL_YUGIOH_DECK_HASHMAP_NAME)
+					.keySerializer(Serializer.STRING)
+					.valueSerializer(Serializer.STRING)
+					.createOrOpen();
+				mapDeck.put(deckName, stringDeck);
+			}
+			System.out.println("- added new " + contesto + " deck: " + stringDeck + "/ made by: " + actualUser);
+			db.commit();
+		}
+	}
+
+	@Override
+	public void changeDeckName(String oldDeckName, String newDeckName, String newDeckString, String contesto){
+		//crea una nuove voce nel Db( con lo stesso Value) e cancella quella vecchia
+		//essendo il nome anche Chiave del deck occorre un metodo dedicato
+		oldDeckName = oldDeckName.toUpperCase();
+		newDeckName = newDeckName.toUpperCase();
+		if(!controlDeckName(newDeckName, contesto)) {
+			DB db = getDB();
+			Map<String, String> mapDeck;
+			if(contesto.equals("Magic")) {
+				mapDeck = db.hashMap(PERSONAL_MAGIC_DECK_HASHMAP_NAME)
+					.keySerializer(Serializer.STRING)
+					.valueSerializer(Serializer.STRING)
+					.createOrOpen();
+				if(mapDeck.containsKey(oldDeckName)) {
+					mapDeck.put(newDeckName, newDeckString);
+					mapDeck.remove(oldDeckName);
+					System.out.println(oldDeckName +" aggiornato in " + newDeckName + ": \n" + mapDeck.get(newDeckName));
+				}
+			}else if (contesto.equals("Pokemon")) {
+				mapDeck = db.hashMap(PERSONAL_POKEMON_DECK_HASHMAP_NAME)
+					.keySerializer(Serializer.STRING)
+					.valueSerializer(Serializer.STRING)
+					.createOrOpen();
+				if(mapDeck.containsKey(oldDeckName)) {
+					mapDeck.put(newDeckName, newDeckString);
+					mapDeck.remove(oldDeckName);
+					System.out.println(oldDeckName +" aggiornato in " + newDeckName + ": \n" + mapDeck.get(newDeckName));
+				}
+			}else {
+				mapDeck = db.hashMap(PERSONAL_YUGIOH_DECK_HASHMAP_NAME)
+					.keySerializer(Serializer.STRING)
+					.valueSerializer(Serializer.STRING)
+					.createOrOpen();
+				if(mapDeck.containsKey(oldDeckName)) {
+					mapDeck.put(newDeckName, newDeckString);
+					mapDeck.remove(oldDeckName);
+					System.out.println(oldDeckName +" aggiornato in " + newDeckName + ": \n" + mapDeck.get(newDeckName));
+				}
+			}
+			db.commit();
+		}
+	}
+
+	@Override
+	public void removeDeck(String deck, String contesto) {
+		deck = deck.toUpperCase();
+		DB db = getDB();
+		Map<String, String> mapDeck;
+		if(contesto.equals("Magic")) {
+			mapDeck = db.hashMap(PERSONAL_MAGIC_DECK_HASHMAP_NAME)
+				.keySerializer(Serializer.STRING)
+				.valueSerializer(Serializer.STRING)
+				.createOrOpen();
+			if(mapDeck.containsKey(deck)) {
+				mapDeck.remove(deck);
+				System.out.println(deck + " - eliminato con successo");
+			}
+		}else if (contesto.equals("Pokemon")) {
+			mapDeck = db.hashMap(PERSONAL_POKEMON_DECK_HASHMAP_NAME)
+				.keySerializer(Serializer.STRING)
+				.valueSerializer(Serializer.STRING)
+				.createOrOpen();
+			if(mapDeck.containsKey(deck)) {
+				mapDeck.remove(deck);
+				System.out.println(deck + " - eliminato con successo");
+			}
+		}else {
+			mapDeck = db.hashMap(PERSONAL_YUGIOH_DECK_HASHMAP_NAME)
+				.keySerializer(Serializer.STRING)
+				.valueSerializer(Serializer.STRING)
+				.createOrOpen();
+			if(mapDeck.containsKey(deck)) {
+				mapDeck.remove(deck);
+				System.out.println(deck + " - eliminato con successo");
+			}
+		}
 		db.commit();
+	}
+
+	@Override
+	public void updateDeck(String deckName, String deckString, String contesto) {
+		//per aggiungere o rimuovere una carta dal deck si aggiorna il Json di quel deck
+		deckName = deckName.toUpperCase();
+		DB db = getDB();
+		Map<String, String> mapDeck;
+		if(contesto.equals("Magic")) {
+			mapDeck = db.hashMap(PERSONAL_MAGIC_DECK_HASHMAP_NAME)
+				.keySerializer(Serializer.STRING)
+				.valueSerializer(Serializer.STRING)
+				.createOrOpen();
+			if(mapDeck.containsKey(deckName)) {
+				mapDeck.replace(deckName, deckString);
+				System.out.println(deckName + " - aggiornato con successo: " + mapDeck.get(deckName));
+			}
+		}else if (contesto.equals("Pokemon")) {
+			mapDeck = db.hashMap(PERSONAL_POKEMON_DECK_HASHMAP_NAME)
+				.keySerializer(Serializer.STRING)
+				.valueSerializer(Serializer.STRING)
+				.createOrOpen();
+			if(mapDeck.containsKey(deckName)) {
+				mapDeck.replace(deckName, deckString);
+				System.out.println(deckName + " - aggiornato con successo: " + mapDeck.get(deckName));
+			}
+		}else {
+			mapDeck = db.hashMap(PERSONAL_YUGIOH_DECK_HASHMAP_NAME)
+				.keySerializer(Serializer.STRING)
+				.valueSerializer(Serializer.STRING)
+				.createOrOpen();
+			if(mapDeck.containsKey(deckName)) {
+				mapDeck.replace(deckName, deckString);
+				System.out.println(deckName + " - aggiornato con successo: " + mapDeck.get(deckName));
+			}
+		}
+		db.commit();
+	}
 
 
+
+
+
+
+	@Override
+	public void test() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

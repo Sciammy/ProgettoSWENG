@@ -77,7 +77,7 @@ public class Pokemon_card extends Card{
     @Override
     public String toString() {
         return "ID: " + ID + "Gico: " + tipoGioco
-                + "PokemonCard{" +
+        		+ "PokemonCard{" +
                 "illustrator='" + illustrator + '\'' +
                 ", image='" + image + '\'' +
                 ", name='" + name + '\'' +
@@ -87,20 +87,20 @@ public class Pokemon_card extends Card{
                 '}';
     }
 
-    public String getTypesString() {
-        // TODO Auto-generated method stub
-        if (types == null) {
-            return "---";
-        }
-        else {
-            String tipi = "";
-            for (String tipo : types) {
-                tipi = tipi + tipo + " ";
-            }
+	public String getTypesString() {
+		// TODO Auto-generated method stub
+		if (types == null) {
+			return "---";
+		}
+		else {
+			String tipi = "";
+			for (String tipo : types) {
+				tipi = tipi + tipo + " ";
+			}
+			
+			return tipi.trim();
+		}
+	}
 
-            return tipi.trim();
-        }
-    }
-
-
+ 
 }

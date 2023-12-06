@@ -28,7 +28,24 @@ public interface StockPriceService extends RemoteService {
 	String[] loadProposteScambi();
 
 	void gestisciScambio(String context, boolean accettato, String scambio, String proponente, List<String> actualCard, String actualUser,
-						 List<String> newCard);
+			List<String> newCard);
 
+	String[] loadCartePersonali(String contesto);
+
+	String loadDeckList(String deckName, String contesto);
+
+	String[] loadCarteFromId(List<Integer> cardsId, String contesto);
+
+	boolean controlDeckName(String deckName, String contesto);
+
+	void addNewDeck(String deckName, String stringDeck, String contesto, String actualUser);
+
+	void changeDeckName(String oldDeckName, String newDeckName, String newDeckString, String contesto);
+
+	void updateDeck(String deckName, String deckString, String contesto);
+
+	void removeDeck(String deck, String contesto);
+
+	String[] loadDeckPersonali(String contesto);
 
 }
